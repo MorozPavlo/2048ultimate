@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support — 2048 Ultimate</title>
+<meta name="description" content="Help and contact for the 2048 Ultimate iPhone game.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23EDC22E'/%3E%3Ctext x='50' y='66' font-size='46' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E24%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--ground:#FAF5EA;--surface:#FFFFFF;--ink:#2C2113;--ink-soft:#6B5A42;--line:#ECE1CC;--accent-deep:#E2731C;--accent:#F28C33}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.7}
+  .rnd{font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Hiragino Maru Gothic ProN",system-ui,sans-serif}
+  a{color:var(--accent-deep)}
+  header.bar{border-bottom:1px solid var(--line);background:rgba(250,245,234,.85);backdrop-filter:blur(8px)}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .mark{display:flex;align-items:baseline;gap:8px;font-weight:800}
+  .mark .n{font-size:20px} .mark .u{font-size:10px;letter-spacing:3px;color:var(--accent-deep)}
+  .bar a{color:var(--ink-soft);font-weight:600;font-size:14px;text-decoration:none}
+  main{padding:48px 0 72px}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-deep)}
+  h1{font-size:38px;letter-spacing:-1px;margin:8px 0 10px}
+  .lead{font-size:18px;color:var(--ink-soft);max-width:60ch}
+  .contact{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;margin:26px 0 8px}
+  .contact .dot{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#F7A14A,#E2731C);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex:0 0 auto}
+  .contact a{font-weight:700;font-size:17px}
+  .contact small{display:block;color:var(--ink-soft);font-weight:400;font-size:13px}
+  h2{font-size:22px;margin:38px 0 14px}
+  details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 18px;margin:10px 0}
+  summary{font-weight:700;cursor:pointer;padding:14px 0;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";float:right;color:var(--accent-deep);font-weight:800}
+  details[open] summary::after{content:"–"}
+  details p{margin:0 0 16px;color:#3b2f1e}
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--ink-soft);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  footer a{color:var(--ink-soft);text-decoration:none;margin-left:16px}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a href="../"><span class="mark rnd"><span class="n">2048</span><span class="u">ULTIMATE</span></span></a>
+    <a href="../">← Home</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Help</div>
+    <h1 class="rnd">Support</h1>
+    <p class="lead">2048 Ultimate is made by one person. If something's not working or you have an idea, email me — I read every message and usually reply within a few days.</p>
+
+    <div class="contact">
+      <div class="dot rnd">@</div>
+      <div>
+        <a href="mailto:morozpavlo.ios.developer@gmail.com">morozpavlo.ios.developer@gmail.com</a>
+        <small>Please include your device and iOS version for bug reports.</small>
+      </div>
+    </div>
+
+    <h2 class="rnd">Common questions</h2>
+
+    <details>
+      <summary>I reinstalled the app — is my progress gone?</summary>
+      <p>No. As long as you're signed in to the same iCloud account, your scores, Delta balance, purchased themes and icons, and booster charges are restored automatically from iCloud. Make sure iCloud is enabled on your device.</p>
+    </details>
+
+    <details>
+      <summary>I bought Delta but don't see it</summary>
+      <p>Delta is added as soon as the App Store confirms the purchase. If it doesn't appear, check your internet connection and reopen the app — pending purchases are finished on launch. Delta packs are consumable, so they aren't "restored" like other purchases, but your balance is kept safe in iCloud.</p>
+    </details>
+
+    <details>
+      <summary>How do the boosters work?</summary>
+      <p>Each game starts with a set number of charges for Undo, Shuffle and Magic. Use them freely until they run out, then a new game refreshes them. You can buy extra starting charges with Delta in Settings.</p>
+    </details>
+
+    <details>
+      <summary>How do I see the tutorial again?</summary>
+      <p>Tap the info button (ⓘ) in the top bar, then "View tutorial again" at the bottom of the help screen.</p>
+    </details>
+
+    <details>
+      <summary>Does the game work offline?</summary>
+      <p>Yes. Everything runs on your device — no connection needed to play. Your progress saves locally and syncs to iCloud the next time you're online.</p>
+    </details>
+
+    <details>
+      <summary>Are there ads?</summary>
+      <p>Never. 2048 Ultimate has no advertising and no tracking. Optional Delta packs are the only purchases.</p>
+    </details>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Pavlo Moroz · 2048 Ultimate</div>
+    <nav><a href="../">Home</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a></nav>
+  </div>
+</footer>
+</body>
+</html>

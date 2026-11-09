@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2048 Ultimate — endless 2048 for iPhone</title>
+<meta name="description" content="The classic 2048 rebuilt with boosters, daily challenges, boards up to 8x8, iCloud sync and no ads. Coming soon to iPhone.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23EDC22E'/%3E%3Ctext x='50' y='66' font-size='46' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E24%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<style>
+  :root{
+    --ground:#FAF5EA; --surface:#FFFFFF; --surface-2:#FCF6EA;
+    --ink:#2C2113; --ink-soft:#6B5A42; --line:#ECE1CC;
+    --accent:#F28C33; --accent-deep:#E2731C; --gold:#EDC22E; --coral:#F2654A;
+    /* автентичні кольори плиток 2048 */
+    --t2:#EEE4DA; --t4:#EDE0C8; --t8:#F2B179; --t16:#F59563;
+    --t32:#F67C5F; --t64:#F65E3B; --t128:#EDCF72; --t256:#EDCC61; --t2048:#EDC22E;
+    --board:#B9AC97; --cell:#CDC2AE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  .rnd{font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Hiragino Maru Gothic ProN",system-ui,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  a{color:var(--accent-deep);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* top bar */
+  header.bar{position:sticky;top:0;z-index:20;background:rgba(250,245,234,.82);
+    backdrop-filter:saturate(1.3) blur(10px);border-bottom:1px solid var(--line)}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .mark{display:flex;align-items:baseline;gap:8px;font-weight:800}
+  .mark .n{font-size:22px;letter-spacing:-.5px}
+  .mark .u{font-size:11px;letter-spacing:3px;color:var(--accent-deep);font-weight:800}
+  nav.top a{color:var(--ink-soft);font-weight:600;font-size:14px;margin-left:22px}
+  nav.top a:hover{color:var(--ink);text-decoration:none}
+
+  /* hero */
+  .hero{padding:68px 0 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-deep);
+    background:#F7E7CE;border:1px solid #F0D4A6;padding:6px 12px;border-radius:999px}
+  h1{font-size:clamp(40px,6vw,62px);line-height:1.02;letter-spacing:-1.5px;margin:18px 0 6px;text-wrap:balance}
+  h1 .u{display:block;font-size:.34em;letter-spacing:10px;color:var(--accent-deep);margin-top:6px}
+  .lede{font-size:19px;color:var(--ink-soft);max-width:30ch;margin:14px 0 26px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-weight:700;border-radius:14px;
+    padding:14px 22px;font-size:15px;border:0;cursor:pointer}
+  .btn-dark{background:#241B10;color:#fff}
+  .btn-dark small{display:block;font-size:10px;opacity:.7;font-weight:600;letter-spacing:.5px}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .soon{font-size:12px;color:var(--ink-soft);margin-left:4px}
+
+  /* hero board */
+  .board{background:var(--board);border-radius:20px;padding:12px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+    box-shadow:0 24px 50px -24px rgba(90,60,20,.55);aspect-ratio:1}
+  .tile{border-radius:12px;background:var(--cell);display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:clamp(20px,4vw,34px);color:#71624C}
+  .tile.v2{background:var(--t2)} .tile.v4{background:var(--t4)}
+  .tile.v8{background:var(--t8);color:#fff} .tile.v16{background:var(--t16);color:#fff}
+  .tile.v32{background:var(--t32);color:#fff} .tile.v64{background:var(--t64);color:#fff}
+  .tile.v128{background:var(--t128);color:#fff;font-size:clamp(16px,3vw,26px)}
+  .tile.v2048{background:var(--t2048);color:#fff;font-size:clamp(15px,2.6vw,23px);
+    box-shadow:0 0 0 3px rgba(237,194,46,.35),0 6px 16px rgba(237,194,46,.5)}
+  @media (prefers-reduced-motion:no-preference){
+    .board .tile{animation:pop .5s cubic-bezier(.2,1.1,.3,1) backwards}
+    .board .tile:nth-child(odd){animation-delay:.05s}
+    .board .tile:nth-child(3n){animation-delay:.12s}
+    @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  }
+
+  /* section */
+  section{padding:56px 0}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent-deep)}
+  h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.6px;margin:8px 0 8px;text-wrap:balance}
+  .sub{color:var(--ink-soft);max-width:60ch;margin:0 0 30px}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;
+    transition:transform .18s ease,box-shadow .18s ease}
+  .card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(90,60,20,.4)}
+  .chip{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:#fff;margin-bottom:14px}
+  .card h3{margin:0 0 6px;font-size:17px}
+  .card p{margin:0;color:var(--ink-soft);font-size:14.5px}
+
+  /* strip */
+  .strip{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .strip .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+  .strip .big{font-size:26px;font-weight:800;letter-spacing:-.5px}
+  .strip small{color:var(--ink-soft);font-size:13px}
+
+  /* download band */
+  .band{text-align:center;background:linear-gradient(135deg,#F7A14A,#E2731C);color:#fff;border-radius:24px;
+    padding:48px 28px;box-shadow:0 24px 50px -26px rgba(226,115,28,.8)}
+  .band h2{color:#fff;margin-bottom:8px}
+  .band p{color:rgba(255,255,255,.92);max-width:48ch;margin:0 auto 22px}
+  .band .btn-dark{background:#241B10}
+
+  footer{padding:36px 0 56px;color:var(--ink-soft);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  footer nav a{color:var(--ink-soft);margin-left:18px}
+
+  @media(max-width:780px){
+    .hero{grid-template-columns:1fr;gap:30px;padding-top:44px}
+    .grid{grid-template-columns:1fr 1fr}
+    .strip .grid4{grid-template-columns:1fr 1fr;gap:26px}
+    nav.top a:not(.pill){display:none}
+  }
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="mark rnd"><span class="n">2048</span><span class="u">ULTIMATE</span></div>
+    <nav class="top">
+      <a href="#features">Features</a>
+      <a href="privacy/">Privacy</a>
+      <a href="support/">Support</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Classic 2048 · no ceiling</span>
+      <h1 class="rnd">Merge the numbers.<span class="u">ULTIMATE</span></h1>
+      <p class="lede">The 2048 you know — rebuilt with boosters, daily puzzles and boards up to 8×8. There's no finish line: climb as high as your streak will take you.</p>
+      <div class="cta">
+        <button class="btn btn-dark rnd"> Download<small>On the App Store</small></button>
+        <span class="soon">Coming soon</span>
+      </div>
+    </div>
+    <div class="board rnd" aria-hidden="true">
+      <div class="tile v2">2</div><div class="tile v8">8</div><div class="tile v4">4</div><div class="tile"></div>
+      <div class="tile v16">16</div><div class="tile v2048">2048</div><div class="tile v32">32</div><div class="tile v2">2</div>
+      <div class="tile v4">4</div><div class="tile v128">128</div><div class="tile v64">64</div><div class="tile"></div>
+      <div class="tile"></div><div class="tile v8">8</div><div class="tile v2">2</div><div class="tile v4">4</div>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="kicker">What's inside</div>
+    <h2 class="rnd">Everything the original was missing</h2>
+    <p class="sub">Built solo for players who never wanted the game to stop at 2048.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="chip" style="background:var(--t2048)">∞</div>
+        <h3 class="rnd">No limit</h3>
+        <p>Pass 2048 and keep going — 4096, 8192 and beyond. Your only goal is a higher score.</p>
+      </div>
+      <div class="card">
+        <div class="chip" style="background:var(--t8)">▦</div>
+        <h3 class="rnd">Boards 4×4 to 8×8</h3>
+        <p>Pick your grid. Progress and best score are saved separately for every size.</p>
+      </div>
+      <div class="card">
+        <div class="chip" style="background:var(--coral)">↺</div>
+        <h3 class="rnd">Boosters</h3>
+        <p>Undo a move, shuffle the board, or use Magic to transform a tile when you're stuck.</p>
+      </div>
+      <div class="card">
+        <div class="chip" style="background:var(--accent)">◷</div>
+        <h3 class="rnd">Daily Challenge</h3>
+        <p>A fresh seeded puzzle every day — the same board for everyone. Earn stars for efficiency.</p>
+      </div>
+      <div class="card">
+        <div class="chip" style="background:var(--t16)">✦</div>
+        <h3 class="rnd">Themes &amp; icons</h3>
+        <p>Spend Delta you earn in‑game on tile palettes, board colors and alternate app icons.</p>
+      </div>
+      <div class="card">
+        <div class="chip" style="background:var(--t64)">♛</div>
+        <h3 class="rnd">Leaderboards</h3>
+        <p>Game Center rankings per board size and achievements to chase against friends.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap"><section style="padding:34px 0">
+    <div class="grid4 rnd">
+      <div><div class="big">iCloud</div><small>Progress never lost</small></div>
+      <div><div class="big">No ads</div><small>Ever</small></div>
+      <div><div class="big">3</div><small>Languages · UA · EN · FR</small></div>
+      <div><div class="big">4+</div><small>All ages</small></div>
+    </div>
+  </section></div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="band">
+      <h2 class="rnd">Chase the record.</h2>
+      <p>2048 Ultimate is coming to iPhone. Private, ad‑free, and synced across your devices with iCloud.</p>
+      <button class="btn btn-dark rnd"> Download on the App Store</button>
+      <div class="soon" style="color:rgba(255,255,255,.85);margin-top:12px">Launching soon</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Pavlo Moroz · 2048 Ultimate</div>
+    <nav>
+      <a href="privacy/">Privacy Policy</a>
+      <a href="terms/">Terms</a>
+      <a href="support/">Support</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
